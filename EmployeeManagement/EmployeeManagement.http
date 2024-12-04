@@ -1,0 +1,39 @@
+@EmployeeManagement_HostAddress = https://localhost:5045
+
+### Get All Employees (Asynchronous)
+GET {{EmployeeManagement_HostAddress}}/api/employee/
+Accept: application/json
+
+
+### Get Employees By Id (Asynchronous)
+GET {{EmployeeManagement_HostAddress}}/api/employee/2
+
+
+### Create Employee (Asynchronous)
+POST {{EmployeeManagement_HostAddress}}/api/employee
+Content-Type: application/json
+api-key:"xyz"
+{
+    "firstName": "Mark",
+    "lastName": "Taylor",
+    "city": "",
+    "designation": "Designer",
+    "department": "",
+    "salary": 35000
+}
+
+### Update Employee (Asynchronous)
+PUT {{EmployeeManagement_HostAddress}}/api/employee/2
+Content-Type: application/json
+{
+    "empId": 2,
+    "firstName": "Alice",
+    "lastName": "Johnson",
+    "city": "Thane",
+    "designation": "Senior HR",
+    "department": "",
+    "salary": 50000
+}
+
+### Delete Employee (Asynchronous)
+DELETE {{EmployeeManagement_HostAddress}}/api/employee/3
