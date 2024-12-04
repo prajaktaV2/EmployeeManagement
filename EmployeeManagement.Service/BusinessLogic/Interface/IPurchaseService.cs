@@ -16,5 +16,13 @@ namespace EmployeeManagement.Service.BusinessLogic.Interface
         public Task<List<Purchase>> GetAvgAmtSpentEachMonth();
         public Task<List<Purchase>> GetGroupOfCustPurchase6Month();
         public Task<double> GetMedianAmtSpent();
+        public Task<List<Purchase>> GetHighestPurchaseDayWeek();
+        public Task<List<Purchase>> GetLowestPurchaseDayWeek();
+        public Task<List<Purchase>> GetTotalPurchaseWeekends();
+        public Task<List<Purchase>> GetTotalPurchaseWeekdays();
+        public Task<List<Purchase>> GetTotalPurchaseEachDayWeek();
+        public Task<List<Purchase>> GetTotalPurchaseEachDayWeek3Months();
+        public Task<List<Purchase>> GetAvgPurchaseEachDayWeek();
+        public Task<List<Purchase>> GetPurchaseInformationforCustId3Months(string custId);
     }
 }

@@ -33,7 +33,7 @@ namespace EmployeeManagement.Web.Controllers
             return Ok(employee);
         }
 
-        [HttpGet("query")]
+        [HttpGet("GetEmployeeByRequestQueryId")]
         public async Task<ActionResult<Employee>> GetEmployeeByRequestQueryId([FromQuery] int id)
         {
             var employee = await _employeeService.GetEmployeeByIdAsync(id);
@@ -44,7 +44,7 @@ namespace EmployeeManagement.Web.Controllers
             return Ok(employee);
         }
 
-        [HttpGet("combined/{id}")]
+        [HttpGet("GetEmployeeDetailsCombined/{id}")]
         public async Task<ActionResult> GetEmployeeDetailsCombined(int id, [FromQuery] int id1)
         {
             try
@@ -95,7 +95,7 @@ namespace EmployeeManagement.Web.Controllers
             }
             catch (Exception ex)
             {
-                return NotFound(new { message = ex.Message });
+                return StatusCode(500,new { message = ex.Message });
             }
         }
 
@@ -109,7 +109,7 @@ namespace EmployeeManagement.Web.Controllers
             }
             catch(Exception ex)
             {
-                return NotFound(new { message = ex.Message });
+                return StatusCode(500, new { message = ex.Message });
             }
         }
     }

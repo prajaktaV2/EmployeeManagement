@@ -121,5 +121,108 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
             }
             return Task.FromResult(median);
         }
+
+        public Task<List<Purchase>> GetHighestPurchaseDayWeek()
+        {
+            // get the day of the week with the highest number of purchases in year 2023
+            var getHighestpurchaseDayWeek = DBData.Purchases
+                                    .GroupBy(x => x.PurchaseDate.DayOfWeek)
+                                    .Select(g => new Purchase
+                                    {
+                                        Day = g.Key.ToString(),
+                                        Amount = g.Max(x => x.Amount)
+                                    }).ToList();
+            return Task.FromResult(getHighestpurchaseDayWeek);
+        }
+
+        public Task<List<Purchase>> GetLowestPurchaseDayWeek()
+        {
+            // get the day of the week with the lowest number of purchases in year 2023
+            var getLowestpurchaseDayWeek = DBData.Purchases
+                                    .GroupBy(x => x.PurchaseDate.DayOfWeek)
+                                    .Select(g => new Purchase
+                                    {
+                                        Day = g.Key.ToString(),
+                                        Amount = g.Min(x => x.Amount)
+                                    }).ToList();
+            return Task.FromResult(getLowestpurchaseDayWeek);
+        }
+
+        public Task<List<Purchase>> GetTotalPurchaseWeekends()
+        {
+            // get the total number of purchases made on weekends in year 2023
+            var getTotalWeekend = DBData.Purchases.Where(x => x.PurchaseDate.DayOfWeek == (DayOfWeek)0 || x.PurchaseDate.DayOfWeek == (DayOfWeek)6)
+                                    .GroupBy(x => x.PurchaseDate.DayOfWeek)
+                                    .Select(g => new Purchase
+                                    {
+                                        Day = g.Key.ToString(),
+                                        Amount = g.Sum(x => x.Amount)
+                                    }).ToList();
+                                
+            return Task.FromResult(getTotalWeekend);
+        }
+
+        public Task<List<Purchase>> GetTotalPurchaseWeekdays()
+        {
+            // get the total number of purchases made on weekdays in year 2023
+            var getTotalWeekDays = DBData.Purchases.Where(x => x.PurchaseDate.DayOfWeek > (DayOfWeek)0 && x.PurchaseDate.DayOfWeek < (DayOfWeek)6)
+                                    .GroupBy(x => x.PurchaseDate.DayOfWeek)
+                                    .Select(g => new Purchase
+                                    {
+                                        Day = g.Key.ToString(),
+                                        Amount = g.Sum(x => x.Amount)
+                                    }).ToList();
+            return Task.FromResult(getTotalWeekDays);
+
+        }
+
+        public Task<List<Purchase>> GetTotalPurchaseEachDayWeek()
+        {
+            // get the total number of purchases made on each day of the week in year year
+            var getEachDay = DBData.Purchases
+                                        .GroupBy(x => x.PurchaseDate.DayOfWeek)
+                                        .Select(g => new Purchase
+                                        {
+                                            Day = g.Key.ToString(),
+                                            Amount = g.Sum(x => x.Amount)
+                                        }).ToList();
+            return Task.FromResult(getEachDay);
+
+        }
+
+        public Task<List<Purchase>> GetTotalPurchaseEachDayWeek3Months()
+        {
+            // get the total number of purchases made on each day of the week in the last 3 months
+            var getEachDay3Month = DBData.Purchases.Where(x => x.PurchaseDate >= threeMonthsAgo && x.PurchaseDate <= maxPurchaseDate)
+                                        .GroupBy(x => x.PurchaseDate.DayOfWeek)
+                                        .Select(g => new Purchase
+                                        {
+                                            Day = g.Key.ToString(),
+                                            Amount = g.Sum(x => x.Amount)
+                                        }).ToList();
+            return Task.FromResult(getEachDay3Month);
+        }
+
+        public Task<List<Purchase>> GetAvgPurchaseEachDayWeek()
+        {
+            // get average number of purchases made on each day of the week in year year
+            var getAvgEachDay = DBData.Purchases
+                                        .GroupBy(x => x.PurchaseDate.DayOfWeek)
+                                        .Select(g => new Purchase
+                                        {
+                                            Day = g.Key.ToString(),
+                                            Amount = g.Average(x => x.Amount)
+                                        }).ToList();
+            return Task.FromResult(getAvgEachDay);
+        }
+
+        public Task<List<Purchase>> GetPurchaseInformationforCustId3Months(string custId)
+        {
+            // find the purchase information for customer id who have made purchases in the last 3 months
+            var getCustPurchaseInfo = DBData.Purchases
+                                        .OrderByDescending(x => x.PurchaseDate >= threeMonthsAgo && x.PurchaseDate <= maxPurchaseDate)
+                                        .Where(x => x.CustomerId == custId).ToList();
+            return Task.FromResult(getCustPurchaseInfo);
+        }
     }
 }
