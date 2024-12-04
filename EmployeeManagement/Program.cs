@@ -8,11 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddHttpClient<IPartnerApiService,PartnerApiService>(); // Register HttpClient for PartnerApiService
+
 builder.Services.AddSingleton(typeof(IEmployeeService), typeof(EmployeeService));
 builder.Services.AddSingleton(typeof(IProductOrderService), typeof(ProductOrderService));
 builder.Services.AddSingleton(typeof(IPurchaseService), typeof(PurchaseService));
 builder.Services.AddSingleton(typeof(ISaleService), typeof(SaleService));
 builder.Services.AddSingleton(typeof(IOrderService), typeof(OrderService));
+//builder.Services.AddSingleton(typeof(IPartnerApiService), typeof(PartnerApiService));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
