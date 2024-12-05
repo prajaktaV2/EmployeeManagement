@@ -9,6 +9,6 @@ namespace EmployeeManagement.Service.BusinessLogic.Interface
 {
     public interface IPartnerApiService
     {
-        public Task<List<Products>> GetPartnerProduct(int limit);
+        public Task<List<ProductResponse>> GetPartnerProduct(int limit);
     }
 }

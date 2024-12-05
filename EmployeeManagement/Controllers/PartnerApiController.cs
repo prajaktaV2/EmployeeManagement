@@ -19,7 +19,7 @@ namespace EmployeeManagement.Web.Controllers
 
 
         [HttpGet("/products/partner")]
-        public async Task<ActionResult<IEnumerable<Products>>> GetPartnerProduct([FromQuery] int limit)
+        public async Task<ActionResult<IEnumerable<ProductResponse>>> GetPartnerProduct([FromQuery] int limit)
         {
             try
             {

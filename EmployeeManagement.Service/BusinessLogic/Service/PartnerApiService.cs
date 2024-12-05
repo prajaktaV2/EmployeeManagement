@@ -20,10 +20,16 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
             _httpClient = httpClient;
         }
 
-        public async Task<List<Products>> GetPartnerProduct(int limit)
+        public async Task<List<ProductResponse>> GetPartnerProduct(int limit)
         {
             var response = await _httpClient.GetFromJsonAsync<List<Products>>($"https://fakestoreapi.com/products?limit={limit}");
-            return response ?? new List<Products>();
+            var result = response?.Select(x => new ProductResponse 
+                        { 
+                            Title=x.Title,
+                            Price=x.Price,
+                            Description= x.Description 
+                        }).ToList();
+            return result ?? [];
         }
     }
 }

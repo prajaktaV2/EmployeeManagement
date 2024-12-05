@@ -18,6 +18,7 @@ builder.Services.AddSingleton(typeof(IOrderService), typeof(OrderService));
 builder.Services.AddSingleton(typeof(ISupportTicketService), typeof(SupportTicketService));
 builder.Services.AddSingleton(typeof(IInquiryService), typeof(InquiryService));
 builder.Services.AddSingleton(typeof(ICustomerActivityService), typeof(CustomerActivityService));
+builder.Services.AddSingleton(typeof(IApplicationDataService), typeof(ApplicationDataService));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
