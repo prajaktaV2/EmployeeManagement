@@ -11,5 +11,7 @@ namespace EmployeeManagement.Model.Models
         public string? CategoryName { get; set; }
         public int Quantity { get; set; }
         public DateTime InquiryDate { get; set; }
+        public int TotalNoOfInquiry { get; set; }
+
     }
 }
