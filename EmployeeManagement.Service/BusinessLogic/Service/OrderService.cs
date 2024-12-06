@@ -73,7 +73,6 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
 
         public Task<int> GetTotalNoMadePurchaseInAfterNoon()
         {
-            
             // get the total number of purchases made in the afternoon of first month of year 2023
             var getTotalPurchaseAfterNoon = DBData.Orders
                             .Where(x => x.OrderDate.Year == YEAR && x.OrderDate.Hour >= 12 && x.OrderDate.Hour <= 18)
@@ -105,7 +104,6 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
             var getTotalOrderPlaced = DBData.Orders.Where(x => x.OrderDate >= threeMonthsAgo && x.OrderDate <= maxOrderDate)
                                      .Count();
             return Task.FromResult(getTotalOrderPlaced);
-        
         }
 
         public Task<List<Order>> GetTotalUniqueCustomerOrderIn3Month()
@@ -113,6 +111,15 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
             // get the total number of unique customers who have placed orders in the last 3 months
             var getUniqueCust = DBData.Orders.Where(x => x.OrderDate >= threeMonthsAgo && x.OrderDate <= maxOrderDate).Distinct().ToList();
             return Task.FromResult(getUniqueCust);
+        }
+
+        public Task<List<int>> GetTotalNoOrderPlacedPerMonth3Month()
+        {
+            // get the total number of orders placed per month in the last 3 months
+            var getTotalOrderPlaced3Month = DBData.Orders.Where(x => x.OrderDate >= threeMonthsAgo && x.OrderDate <= maxOrderDate)
+                                            .GroupBy(x => x.OrderDate.Month)
+                                            .Select(grp => grp.Count()).ToList();
+            return Task.FromResult(getTotalOrderPlaced3Month);
         }
     }
 }

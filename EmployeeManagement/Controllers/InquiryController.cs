@@ -28,5 +28,11 @@ namespace EmployeeManagement.Web.Controllers
             var getList = await _inquiryService.GetDateHadHighestNoInquiry();
             return Ok(getList);
         }
+        [HttpGet("GetProductCategoryHighestNoInquiry3Month")]
+        public async Task<ActionResult<IEnumerable<Inquiry>>> GetProductCategoryHighestNoInquiry3Month()
+        {
+            var getList = await _inquiryService.GetProductCategoryHighestNoInquiry3Month();
+            return Ok(getList);
+        }
     }
 }
