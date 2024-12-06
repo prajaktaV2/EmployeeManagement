@@ -41,7 +41,20 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
                                     TotalNoOfInquiry = g.Count()
                                 }).ToList();
             return Task.FromResult(getHighestDate);
+        }
 
+        public Task<List<Inquiry>> GetProductCategoryHighestNoInquiry3Month()
+        {
+            // get the product categories with the highest number of inquiries in the last 3 months
+            var getProductCategoryHighestNoInquiry= DBData.MonthlyInquiries
+                                                    .Where(x => x.InquiryDate > threeMonthsAgo && x.InquiryDate < maxInquiryDate)
+                                                    .GroupBy(x => x.CategoryName)
+                                                    .Select(g=> new Inquiry
+                                                    {
+                                                        CategoryName = g.Key,
+                                                        TotalNoOfInquiry = g.Max(x => x.Quantity)
+                                                    }).ToList();
+            return Task.FromResult(getProductCategoryHighestNoInquiry);
         }
     }
 }

@@ -65,21 +65,21 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
 
         public Task<List<SalesResponse>> GetProductSalesVolumeEachSeason(int num)
         {
-            var seasons = new Dictionary<string, (int startMonth, int endMonth)>
-        {
-            { "Spring", (3, 5) },
-            { "Summer", (6, 8) },
-            { "Autumn", (9, 11) },
-            { "Winter", (12, 2) } 
-        };
+            var seasons = new Dictionary<string, List<int>>//(int startMonth, int endMonth)>
+            {
+                { "Spring", new List<int> {3,4, 5 } },
+                { "Summer", new List<int>{6,7, 8 } },
+                { "Autumn", new List < int > { 9, 10, 11 } },
+                { "Winter", new List < int > { 12, 1, 2 } } 
+            };
             var topProductsBySeason = new List<SalesResponse>();
 
             foreach (var season in seasons)
             {
                 // Filter and group sales by the month range for each season
                 var filteredSales = DBData.MonthlySales
-                    .Where(x => (x.SaleDate.Month >= season.Value.startMonth && x.SaleDate.Month <= season.Value.endMonth)
-                                   || (season.Key == "Winter" && (x.SaleDate.Month == 12 || x.SaleDate.Month <= 2)))
+                    .Where(x => (x.SaleDate.Month >= season.Value.First() && x.SaleDate.Month <= season.Value.Last())
+                                   || (season.Key == "Winter" && (x.SaleDate.Month == season.Value.First() || x.SaleDate.Month <= season.Value.Last())))
                     .GroupBy(x => x.ProductName)
                     .Select(grp => new SalesResponse
                     {

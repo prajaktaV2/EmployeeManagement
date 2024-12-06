@@ -11,5 +11,6 @@ namespace EmployeeManagement.Service.BusinessLogic.Interface
     {
         public Task<List<Inquiry>> GetNoOfInquiryPerCategory3Month();
         public Task<List<Inquiry>> GetDateHadHighestNoInquiry();
+        public Task<List<Inquiry>> GetProductCategoryHighestNoInquiry3Month();
     }
 }
