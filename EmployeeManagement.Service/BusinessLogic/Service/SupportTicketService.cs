@@ -11,67 +11,74 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
 {
     public class SupportTicketService : ISupportTicketService
     {
-        public static DateTime maxTicketDate = DBData.MonthlySupportTickets.Max(p => p.TicketDate);
-        public static DateTime minTicketDate = DBData.MonthlySupportTickets.Min(p => p.TicketDate);
-
-        public static DateTime threeMonthsAgo = DBData.MonthlySupportTickets.Max(x => x.TicketDate).AddMonths(-3);
-        public static DateTime threeMonthsLater = DBData.MonthlySupportTickets.Min(x => x.TicketDate).AddMonths(3);
+        private readonly IProductOrderService _productOrderService;
+        public SupportTicketService(IProductOrderService productOrderService)
+        {
+            _productOrderService = productOrderService;
+        }
+       
         public const int YEAR = 2023;
-        public Task<List<ViewModel>> GetAvgSupportTicket3Months()
+        public async Task<List<ViewModel>> GetAvgSupportTicket3Months()
         {
             // get average number of support tickets raised per month in the last 3 months
-            var getAvgSupportTicket = DBData.MonthlySupportTickets.Where(x => x.TicketDate >= threeMonthsAgo && x.TicketDate<=maxTicketDate)
+            var supportTicket = await _productOrderService.GetAllSupportTicketAsync();
+            var getAvgSupportTicket = supportTicket.Where(x => x.TicketDate >= DateTime.Now.AddMonths(-3))
                                     .GroupBy(x => x.TicketDate.Month)
                                     .Select(g => new ViewModel  { Month = g.Key, Avg = g.Average(x => x.TicketType.Count()) }).ToList();
-            return Task.FromResult(getAvgSupportTicket);
+            return getAvgSupportTicket;
         }
 
-        public Task<List<ViewModel>> GetDuplicateSupportTicket()
+        public async Task<List<ViewModel>> GetDuplicateSupportTicket()
         {
             // get duplicate support tickets
-            var getDuplicateTicket = DBData.MonthlySupportTickets
+            var supportTicket = await _productOrderService.GetAllSupportTicketAsync();
+            var getDuplicateTicket = supportTicket
                                     .GroupBy(x => x.TicketType)
                                     .Where(g => g.Count() > 1)
                                     .Select(g => new ViewModel { TicketType = g.Key })
                                     .ToList();
-            return Task.FromResult(getDuplicateTicket);
+            return getDuplicateTicket;
         }
 
-        public Task<List<ViewModel>> GetSupportTicket3Month()
+        public async Task<List<ViewModel>> GetSupportTicket3Month()
         {
             // get the total number of support tickets raised per month in the last 3 months
-            var gettotalSupportTicketPerMonth = DBData.MonthlySupportTickets.Where(x => x.TicketDate >= threeMonthsAgo)
+            var supportTicket = await _productOrderService.GetAllSupportTicketAsync();
+            var gettotalSupportTicketPerMonth = supportTicket.Where(x => x.TicketDate >= DateTime.Now.AddMonths(-3))
                                     .GroupBy(x => x.TicketDate.Month)
                                     .Select(g => new ViewModel { Month = g.Key, TotalNo = g.Count() }).ToList();
-            return Task.FromResult(gettotalSupportTicketPerMonth);
+            return gettotalSupportTicketPerMonth;
         }
 
-        public Task<List<ViewModel>> GetSupportTicketCategory3Month()
+        public async Task<List<ViewModel>> GetSupportTicketCategory3Month()
         {
             // get count of support tickets raised per category in the last 3 months
             // get the total number of support tickets raised per category in the last 3 months
-            var gettotalSupportTicket = DBData.MonthlySupportTickets.Where(x => x.TicketDate >= threeMonthsAgo)
+            var supportTicket = await _productOrderService.GetAllSupportTicketAsync();
+            var gettotalSupportTicket = supportTicket.Where(x => x.TicketDate >= DateTime.Now.AddMonths(-3))
                                     .GroupBy(x => x.TicketType)
                                     .Select(g => new ViewModel { TicketType = g.Key, TotalNo = g.Count() }).ToList();
-            return Task.FromResult(gettotalSupportTicket);
+            return gettotalSupportTicket;
         }
 
-        public Task<List<ViewModel>> GetAvgSupportTicketPerMonth()
+        public async Task<List<ViewModel>> GetAvgSupportTicketPerMonth()
         {
             // find the average number of support tickets raised per month in year 2023
-            var getAvgSupportTicketPerMonth = DBData.MonthlySupportTickets.Where(x => x.TicketDate.Year == YEAR)
+            var supportTicket = await _productOrderService.GetAllSupportTicketAsync();
+            var getAvgSupportTicketPerMonth = supportTicket.Where(x => x.TicketDate.Year == YEAR)
                               .GroupBy(x => x.TicketDate.Month)
                               .Select(g => new ViewModel { Month = g.Key, Avg = g.Average(x => x.TicketDate.Month) }).ToList();
-            return Task.FromResult(getAvgSupportTicketPerMonth);
+            return getAvgSupportTicketPerMonth;
         }
 
-        public Task<ViewModel> GetHighestSupportTicket()
+        public async Task<ViewModel> GetHighestSupportTicket()
         {
             // which month had the highest number of support tickets raised in year 2023
-            var getHighestTicketRaised = DBData.MonthlySupportTickets.Where(x => x.TicketDate.Year == YEAR)
+            var supportTicket = await _productOrderService.GetAllSupportTicketAsync();
+            var getHighestTicketRaised = supportTicket.Where(x => x.TicketDate.Year == YEAR)
                                         .GroupBy(x => x.TicketDate.Month)
                                         .Select(g => new ViewModel { Month = g.Key, TotalNo = g.Count() }).OrderByDescending(x=>x.TotalNo).First();
-            return Task.FromResult(getHighestTicketRaised);
+            return getHighestTicketRaised;
         }
     }
 }

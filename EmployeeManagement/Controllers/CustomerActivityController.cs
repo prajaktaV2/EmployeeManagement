@@ -18,14 +18,14 @@ namespace EmployeeManagement.Web.Controllers
         [HttpGet("GetUniqueCustomer3Months")]
         public async Task<ActionResult<IEnumerable<CustomerActivity>>> GetUniqueCustomer3Months()
         {
-            var getList = await _customerActivityService.GetUniqueCustomer3Months();
-            return Ok(getList);
+            var getUniqueCustomer3MonthsList = await _customerActivityService.GetUniqueCustomer3Months();
+            return Ok(getUniqueCustomer3MonthsList);
         }
         [HttpGet("GetMostActiveCustomer3Months")]
         public async Task<ActionResult<IEnumerable<CustomerActivity>>> GetMostActiveCustomer3Months()
         {
-            var getList = await _customerActivityService.GetMostActiveCustomer3Months();
-            return Ok(getList);
+            var getMostActiveCustomer3MonthsList = await _customerActivityService.GetMostActiveCustomer3Months();
+            return Ok(getMostActiveCustomer3MonthsList);
         }
     }
 }

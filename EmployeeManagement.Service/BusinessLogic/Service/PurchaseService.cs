@@ -11,39 +11,40 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
 {
     public class PurchaseService : IPurchaseService
     {
-        public static DateTime maxPurchaseDate = DBData.Purchases.Max(p => p.PurchaseDate);
-        public static DateTime minPurchaseDate = DBData.Purchases.Min(p => p.PurchaseDate);
-
-        public static DateTime threeMonthsAgo = DBData.Purchases.Max(x => x.PurchaseDate).AddMonths(-3);
-        public static DateTime threeMonthsLater = DBData.Purchases.Min(x => x.PurchaseDate).AddMonths(3);
-        public static DateTime sixMonthAgo = DBData.Purchases.Max(x => x.PurchaseDate).AddMonths(-6);
-        public static DateTime sixMonthLater = DBData.Purchases.Min(x => x.PurchaseDate).AddMonths(6);
-        public const int YEAR = 2023;
-        public Task<List<Purchase>> GetPurchaseCustomerList()
+        private readonly IProductOrderService _productOrderService;
+        public PurchaseService(IProductOrderService productOrderService)
         {
-            //generate a list of customers who have made purchases in the year 2023
-            return Task.FromResult(DBData.Purchases
-                                    .Where(x => x.PurchaseDate.Year == YEAR)
-                                    .Select(x => new Purchase { CustomerId = x.CustomerId})
-                                    .ToList());
+            _productOrderService = productOrderService;
         }
 
-        public Task<List<Purchase>> GetTotalAmountSpentByEachCustomer()
+        public const int YEAR = 2023;
+        public async Task<List<Purchase>> GetPurchaseCustomerList()
+        {
+            //generate a list of customers who have made purchases in the year 2023
+            var purchases= await _productOrderService.GetAllPurchaseAsync();
+            return  (purchases
+                     .Where(x => x.PurchaseDate.Year == YEAR)
+                     .Select(x => new Purchase { CustomerId = x.CustomerId})
+                     .ToList());
+        }
+
+        public async Task<List<Purchase>> GetTotalAmountSpentByEachCustomer()
         {
             /// get the total amount spent by each customer in the year 2023
-            // var getAmtSpentlinq = (from c in DBData.Purchases
-            return Task.FromResult(DBData.Purchases
+            // var getAmtSpentlinq = (from c in purchases
+            var purchases = await _productOrderService.GetAllPurchaseAsync();
+            return (purchases
                                     .Where(x => x.PurchaseDate.Year == YEAR)
                                     .GroupBy(x => x.CustomerId)
                                     .Select(grp => new Purchase { CustomerId = grp.Key, Amount = grp.Sum(x => x.Amount) })
                                     .ToList());
         }
 
-        public Task<List<Purchase>> GetTopCustomerAmtSpentEachMonth()
+        public async Task<List<Purchase>> GetTopCustomerAmtSpentEachMonth()
         {
             // get top customer in terms of total amount spent in each month of year 2023
-
-            var getList = DBData.Purchases
+            var purchases = await _productOrderService.GetAllPurchaseAsync();
+            var getCustTotalSpentList = purchases
                                     .Where(x => x.PurchaseDate.Year == YEAR)
                                     .GroupBy(x => x.PurchaseDate.Month)
                                     .Select(grp => new Purchase
@@ -52,13 +53,14 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
                                         CustomerId = grp.OrderByDescending(x => x.Amount)?.FirstOrDefault()?.CustomerId,
                                         Amount = grp.Max(x => x.Amount)
                                     }).ToList();
-            return Task.FromResult(getList);
+            return getCustTotalSpentList;
         }
 
-        public Task<List<object>> GetMinMaxAvgAllCustomer()
+        public async Task<List<object>> GetMinMaxAvgAllCustomer()
         {
             // get minimum, maximum, and average purchase amount for all customers
-            var getforAllcustomer = DBData.Purchases
+            var purchases = await _productOrderService.GetAllPurchaseAsync();
+            var getforAllcustomer = purchases
                                     .GroupBy(x => x.CustomerId)
                                     .Select(g => new
                                     {
@@ -75,13 +77,14 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
                 obj.Add($"  Minimum Purchase: {stat.Min}");
                 obj.Add($"  Maximum Purchase: {stat.Max}");
             }
-            return Task.FromResult(obj);
+            return obj;
         }
 
-        public Task<List<Purchase>> GetAvgAmtSpentEachMonth()
+        public async Task<List<Purchase>> GetAvgAmtSpentEachMonth()
         {
             // find the average amount spent by customers in each month of year 2023
-            var getAvgAmtCustomer = DBData.Purchases.Where(x => x.PurchaseDate.Year == YEAR)
+            var purchases = await _productOrderService.GetAllPurchaseAsync();
+            var getAvgAmtCustomer = purchases.Where(x => x.PurchaseDate.Year == YEAR)
                                     .GroupBy(x => new { x.PurchaseDate.Month, x.CustomerId })
                                     .Select(g => new Purchase
                                     {
@@ -89,26 +92,28 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
                                         Month = g.Key.Month,
                                         CustomerId = g.Key.CustomerId
                                     }).ToList();
-            return Task.FromResult(getAvgAmtCustomer);
+            return getAvgAmtCustomer;
         }
 
-        public Task<List<Purchase>> GetGroupOfCustPurchase6Month()
+        public async Task<List<Purchase>> GetGroupOfCustPurchase6Month()
         {
-            // get group of customers who have made purchases in the last 6 months of year of year
-            var getGroupCust = DBData.Purchases.Where(x => x.PurchaseDate >= sixMonthAgo && x.PurchaseDate<=maxPurchaseDate)
+            // get group of customers who have made purchases in the last 6 months of year of 2023
+            var purchases = await _productOrderService.GetAllPurchaseAsync();
+            var getGroupCust = purchases.Where(x => x.PurchaseDate >= new DateTime(YEAR,06,01) && x.PurchaseDate<= new DateTime(YEAR,12,31))
                                     .GroupBy(x => x.CustomerId)
                                     .Select(g => new Purchase
                                     {
                                         //Amount = g.Sum(x => x.Amount),
                                         CustomerId = g.Key
                                     }).ToList();
-            return Task.FromResult(getGroupCust);
+            return getGroupCust;
         }
 
-        public Task<double> GetMedianAmtSpent()
+        public async Task<double> GetMedianAmtSpent()
         {
             // find the median amount spent by customers in the last 3 months
-            var getMedianAmt = DBData.Purchases.Where(x => x.PurchaseDate >= threeMonthsAgo && x.PurchaseDate<=maxPurchaseDate).ToList();
+            var purchases = await _productOrderService.GetAllPurchaseAsync();
+            var getMedianAmt = purchases.Where(x => x.PurchaseDate >= DateTime.Now.AddMonths(-3)).ToList();
             int count = getMedianAmt.Count;
             double median = 0;
             if (count % 2 == 0)
@@ -119,39 +124,42 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
             {
                 median = getMedianAmt[count / 2].Amount;
             }
-            return Task.FromResult(median);
+            return median;
         }
 
-        public Task<List<Purchase>> GetHighestPurchaseDayWeek()
+        public async Task<List<Purchase>> GetHighestPurchaseDayWeek()
         {
             // get the day of the week with the highest number of purchases in year 2023
-            var getHighestpurchaseDayWeek = DBData.Purchases
+            var purchases = await _productOrderService.GetAllPurchaseAsync();
+            var getHighestpurchaseDayWeek = purchases
                                     .GroupBy(x => x.PurchaseDate.DayOfWeek)
                                     .Select(g => new Purchase
                                     {
                                         Day = g.Key.ToString(),
                                         Amount = g.Max(x => x.Amount)
                                     }).ToList();
-            return Task.FromResult(getHighestpurchaseDayWeek);
+            return getHighestpurchaseDayWeek;
         }
 
-        public Task<List<Purchase>> GetLowestPurchaseDayWeek()
+        public async Task<List<Purchase>> GetLowestPurchaseDayWeek()
         {
             // get the day of the week with the lowest number of purchases in year 2023
-            var getLowestpurchaseDayWeek = DBData.Purchases
+            var purchases = await _productOrderService.GetAllPurchaseAsync();
+            var getLowestpurchaseDayWeek = purchases
                                     .GroupBy(x => x.PurchaseDate.DayOfWeek)
                                     .Select(g => new Purchase
                                     {
                                         Day = g.Key.ToString(),
                                         Amount = g.Min(x => x.Amount)
                                     }).ToList();
-            return Task.FromResult(getLowestpurchaseDayWeek);
+            return getLowestpurchaseDayWeek;
         }
 
-        public Task<List<Purchase>> GetTotalPurchaseWeekends()
+        public async Task<List<Purchase>> GetTotalPurchaseWeekends()
         {
             // get the total number of purchases made on weekends in year 2023
-            var getTotalWeekend = DBData.Purchases.Where(x => x.PurchaseDate.DayOfWeek == (DayOfWeek)0 || x.PurchaseDate.DayOfWeek == (DayOfWeek)6)
+            var purchases = await _productOrderService.GetAllPurchaseAsync();
+            var getTotalWeekend = purchases.Where(x => x.PurchaseDate.DayOfWeek == (DayOfWeek)0 || x.PurchaseDate.DayOfWeek == (DayOfWeek)6)
                                     .GroupBy(x => x.PurchaseDate.DayOfWeek)
                                     .Select(g => new Purchase
                                     {
@@ -159,70 +167,75 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
                                         Amount = g.Sum(x => x.Amount)
                                     }).ToList();
                                 
-            return Task.FromResult(getTotalWeekend);
+            return getTotalWeekend;
         }
 
-        public Task<List<Purchase>> GetTotalPurchaseWeekdays()
+        public async Task<List<Purchase>> GetTotalPurchaseWeekdays()
         {
             // get the total number of purchases made on weekdays in year 2023
-            var getTotalWeekDays = DBData.Purchases.Where(x => x.PurchaseDate.DayOfWeek > (DayOfWeek)0 && x.PurchaseDate.DayOfWeek < (DayOfWeek)6)
+            var purchases = await _productOrderService.GetAllPurchaseAsync();
+            var getTotalWeekDays = purchases.Where(x => x.PurchaseDate.DayOfWeek > (DayOfWeek)0 && x.PurchaseDate.DayOfWeek < (DayOfWeek)6)
                                     .GroupBy(x => x.PurchaseDate.DayOfWeek)
                                     .Select(g => new Purchase
                                     {
                                         Day = g.Key.ToString(),
                                         Amount = g.Sum(x => x.Amount)
                                     }).ToList();
-            return Task.FromResult(getTotalWeekDays);
+            return getTotalWeekDays;
 
         }
 
-        public Task<List<Purchase>> GetTotalPurchaseEachDayWeek()
+        public async Task<List<Purchase>> GetTotalPurchaseEachDayWeek()
         {
-            // get the total number of purchases made on each day of the week in year year
-            var getEachDay = DBData.Purchases
+            // get the total number of purchases made on each day of the week in year 2023
+            var purchases = await _productOrderService.GetAllPurchaseAsync();
+            var getEachDay = purchases
                                         .GroupBy(x => x.PurchaseDate.DayOfWeek)
                                         .Select(g => new Purchase
                                         {
                                             Day = g.Key.ToString(),
                                             Amount = g.Sum(x => x.Amount)
                                         }).ToList();
-            return Task.FromResult(getEachDay);
+            return getEachDay;
 
         }
 
-        public Task<List<Purchase>> GetTotalPurchaseEachDayWeek3Months()
+        public async Task<List<Purchase>> GetTotalPurchaseEachDayWeek3Months()
         {
             // get the total number of purchases made on each day of the week in the last 3 months
-            var getEachDay3Month = DBData.Purchases.Where(x => x.PurchaseDate >= threeMonthsAgo && x.PurchaseDate <= maxPurchaseDate)
+            var purchases = await _productOrderService.GetAllPurchaseAsync();
+            var getEachDay3Month = purchases.Where(x => x.PurchaseDate >= DateTime.Now.AddMonths(-3))
                                         .GroupBy(x => x.PurchaseDate.DayOfWeek)
                                         .Select(g => new Purchase
                                         {
                                             Day = g.Key.ToString(),
                                             Amount = g.Sum(x => x.Amount)
                                         }).ToList();
-            return Task.FromResult(getEachDay3Month);
+            return getEachDay3Month;
         }
 
-        public Task<List<Purchase>> GetAvgPurchaseEachDayWeek()
+        public async Task<List<Purchase>> GetAvgPurchaseEachDayWeek()
         {
-            // get average number of purchases made on each day of the week in year year
-            var getAvgEachDay = DBData.Purchases
+            // get average number of purchases made on each day of the week in year 2023
+            var purchases = await _productOrderService.GetAllPurchaseAsync();
+            var getAvgEachDay = purchases
                                         .GroupBy(x => x.PurchaseDate.DayOfWeek)
                                         .Select(g => new Purchase
                                         {
                                             Day = g.Key.ToString(),
                                             Amount = g.Average(x => x.Amount)
                                         }).ToList();
-            return Task.FromResult(getAvgEachDay);
+            return getAvgEachDay;
         }
 
-        public Task<List<Purchase>> GetPurchaseInformationforCustId3Months(string custId)
+        public async Task<List<Purchase>> GetPurchaseInformationforCustId3Months(string custId)
         {
             // find the purchase information for customer id who have made purchases in the last 3 months
-            var getCustPurchaseInfo = DBData.Purchases
-                                        .OrderByDescending(x => x.PurchaseDate >= threeMonthsAgo && x.PurchaseDate <= maxPurchaseDate)
+            var purchases = await _productOrderService.GetAllPurchaseAsync();
+            var getCustPurchaseInfo = purchases
+                                        .OrderByDescending(x => x.PurchaseDate >= DateTime.Now.AddMonths(-3))
                                         .Where(x => x.CustomerId == custId).ToList();
-            return Task.FromResult(getCustPurchaseInfo);
+            return getCustPurchaseInfo;
         }
     }
 }

@@ -7,10 +7,16 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
 {
     public class ApplicationDataService : IApplicationDataService
     {
-        public Task<List<CustomerActivityResponse>> GetListOfEachCustomerLoyaltyTier()
+        private readonly IProductOrderService _productOrderService;
+        public ApplicationDataService(IProductOrderService productOrderService)
+        {
+            _productOrderService = productOrderService;
+        }
+        public async Task<List<CustomerActivityResponse>> GetListOfEachCustomerLoyaltyTier()
         {
             //-Return a list showing each customer's loyalty tier.
-            var getLoyaltyCustomerList = DBData.CustomerActivities
+            var customerActivities = await _productOrderService.GetAllCustomerActivityAsync();
+            var getLoyaltyCustomerList = customerActivities
                                         .GroupBy(x => x.CustomerId)
                                         .Select(grp => new CustomerActivityResponse
                                         {
@@ -20,27 +26,29 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
                                         })
                                         .ToList();
 
-            return Task.FromResult(getLoyaltyCustomerList);
+            return getLoyaltyCustomerList;
         }
 
-        public Task<List<ComplaintResponse>> GetListOfMajorComplaintRaised()
+        public async Task<List<ComplaintResponse>> GetListOfMajorComplaintRaised()
         {
             //- Return a list of major complaint categories, their occurrence count, and a status indicating if they are critical.
-            var getCountofComplaintRaised = DBData.MonthlySupportTickets
+            var supportTickets = await _productOrderService.GetAllSupportTicketAsync();
+            var getCountofComplaintRaised = supportTickets
                                             .GroupBy(x => x.TicketType)
                                             .Select(grp => new ComplaintResponse
                                             {
                                                 Category = grp.Key,
                                                 TotalCount = grp.Count()
                                             }).Where(x => x.TotalCount >= 10).ToList();
-            return Task.FromResult(getCountofComplaintRaised);
+            return getCountofComplaintRaised;
 
         }
 
-        public Task<List<OrderResponse>> GetListOfProductWithOrderCountEachMonth(int year)
+        public async Task<List<OrderResponse>> GetListOfProductWithOrderCountEachMonth(int year)
         {
             //- Return a list of products with their order counts for each month of the specified year.
-            var getProductOrder = DBData.Orders.Where(o => o.OrderDate.Year == year)
+            var orders = await _productOrderService.GetAllOrderAsync();
+            var getProductOrder = orders.Where(o => o.OrderDate.Year == year)
                                 .SelectMany(o => o.Products, (or, pr) => new { or.OrderDate, pr })
                                 .GroupBy(x => new { x.OrderDate.Month, x.pr.Category })
                                 .Select(grp => new OrderResponse
@@ -49,7 +57,7 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
                                     Product = grp.Key.Category,
                                     TotalCount = grp.Count()
                                 }).OrderBy(x => x.Month).ToList();
-            return Task.FromResult(getProductOrder);
+            return getProductOrder;
         }
 
         public static string GetLoyaltyTier(int purchaseFrequency)
@@ -63,12 +71,12 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
             return string.Empty;
         }
 
-        public Task<List<SalesResponse>> GetProductSalesVolumeEachSeason(int num)
+        public async Task<List<SalesResponse>> GetProductSalesVolumeEachSeason(int num)
         {
-            var seasons = new Dictionary<string, List<int>>//(int startMonth, int endMonth)>
+            var seasons = new Dictionary<string, List<int>>
             {
-                { "Spring", new List<int> {3,4, 5 } },
-                { "Summer", new List<int>{6,7, 8 } },
+                { "Spring", new List<int> {3, 4, 5 } },
+                { "Summer", new List<int>{6, 7, 8 } },
                 { "Autumn", new List < int > { 9, 10, 11 } },
                 { "Winter", new List < int > { 12, 1, 2 } } 
             };
@@ -76,8 +84,8 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
 
             foreach (var season in seasons)
             {
-                // Filter and group sales by the month range for each season
-                var filteredSales = DBData.MonthlySales
+                var sales = await _productOrderService.GetAllSaleAsync();
+                var filteredSales = sales
                     .Where(x => (x.SaleDate.Month >= season.Value.First() && x.SaleDate.Month <= season.Value.Last())
                                    || (season.Key == "Winter" && (x.SaleDate.Month == season.Value.First() || x.SaleDate.Month <= season.Value.Last())))
                     .GroupBy(x => x.ProductName)
@@ -88,13 +96,9 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
                     })
                     .OrderByDescending(x => x.TotalSales)
                     .Take(num);
-
-                // Add top products of the current season
                 topProductsBySeason.AddRange(filteredSales);
-                
             }
-            return Task.FromResult(topProductsBySeason);
-
+            return topProductsBySeason;
         }
     }
 }

@@ -11,88 +11,94 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
 {
     public class SaleService : ISaleService
     {
+        private readonly IProductOrderService _productOrderService;
+        public SaleService(IProductOrderService productOrderService)
+        {
+            _productOrderService = productOrderService;
+        }
 
-        public static DateTime maxSaleDate = DBData.MonthlySales.Max(p => p.SaleDate);
-        public static DateTime minSaleDate = DBData.MonthlySales.Min(p => p.SaleDate);
-
-        public static DateTime threeMonthsAgo = DBData.MonthlySales.Max(x=>x.SaleDate).AddMonths(-3);
-        public static DateTime threeMonthsLater = DBData.MonthlySales.Min(x => x.SaleDate).AddMonths(3);
-        public static DateTime sixMonthAgo = DBData.MonthlySales.Max(x => x.SaleDate).AddMonths(-6);
-        public static DateTime sixMonthLater = DBData.MonthlySales.Min(x => x.SaleDate).AddMonths(6);
         public const int YEAR = 2023;
-        public Task<List<Sale>> GetTop3ProductSale()
+        public async Task<List<Sale>> GetTop3ProductSale()
         {
             // get the top 3 products with the highest sales in first 3 months of the year 2023
-            var getTop3Sales = DBData.MonthlySales.Where(x => x.SaleDate.Year == YEAR && x.SaleDate <= threeMonthsLater && x.SaleDate>=minSaleDate)
+            var sales = await _productOrderService.GetAllSaleAsync();
+            var getTop3Sales = sales.Where(x => x.SaleDate >= new DateTime(YEAR,01,01) && x.SaleDate <= new DateTime(YEAR,03,31) )
                              .GroupBy(x => x.ProductName)
                              .Select(grp => new Sale
                              { 
                                  ProductName = grp.Key,
                                  QuantitySold = grp.Sum(x => x.QuantitySold)
                              }).Take(3).ToList();
-            return Task.FromResult(getTop3Sales);
+            return getTop3Sales;
         }
 
-        public Task<List<Sale>> GetTotalSalePerMonthSale()
+        public async Task<List<Sale>> GetTotalSalePerMonthSale()
         {
             // get the total number of sales per month in the last 6 months of year 2023
-            var get6MonthSales = DBData.MonthlySales.Where(x => x.SaleDate.Year == YEAR)
-                                    .GroupBy(x => new { x.SaleDate.Month }).TakeLast(6)
+            var sales = await _productOrderService.GetAllSaleAsync();
+            var get6MonthSales = sales.Where(x => x.SaleDate >= new DateTime(YEAR, 06, 01) && x.SaleDate <= new DateTime(YEAR, 12, 31))
+                                    .GroupBy(x => new { x.SaleDate.Month })
                                     .Select(grp => new Sale { QuantitySold = grp.Sum(x => x.QuantitySold), Month = grp.Key.Month }).ToList();
-            return Task.FromResult(get6MonthSales);
+            return get6MonthSales;
         }
 
-        public Task<Sale?> GetMostPopularProduct()
+        public async Task<Sale?> GetMostPopularProduct()
         {
             // find the most popular product category in the last 6 months of the year 2023
-            var getMostPopular = DBData.MonthlySales.Where(x => x.SaleDate.Year == YEAR && x.SaleDate >= sixMonthAgo && x.SaleDate <= maxSaleDate)
+            var sales = await _productOrderService.GetAllSaleAsync();
+            var getMostPopular = sales.Where(x => x.SaleDate >= new DateTime(YEAR, 06, 01) && x.SaleDate <= new DateTime(YEAR, 12, 31))
                                     .GroupBy(x => x.ProductName)
                                     .Select(grp => new Sale { QuantitySold = grp.Sum(x => x.QuantitySold), ProductName = grp.Key }).FirstOrDefault();
-            return Task.FromResult(getMostPopular);
+            return getMostPopular;
         }
 
-        public Task<Sale?> GetLeastPopularProduct()
+        public async Task<Sale?> GetLeastPopularProduct()
         {
             // find the least popular product category in the last 6 months of the year 2023
-            var getMostPopular = DBData.MonthlySales.Where(x => x.SaleDate.Year == YEAR && x.SaleDate >= sixMonthAgo && x.SaleDate <= maxSaleDate)
+            var sales = await _productOrderService.GetAllSaleAsync();
+            var getMostPopular = sales.Where(x => x.SaleDate >= new DateTime(YEAR, 06, 01) && x.SaleDate <= new DateTime(YEAR, 12, 31))
                                     .GroupBy(x => x.ProductName)
                                     .Select(grp => new Sale { QuantitySold = grp.Sum(x => x.QuantitySold), ProductName = grp.Key }).LastOrDefault();
-            return Task.FromResult(getMostPopular);
+            return getMostPopular;
         }
 
-        public Task<Sale?> GetLeastSoldProduct()
+        public async Task<Sale?> GetLeastSoldProduct()
         {
             // find the least sold product in the year 2023
-            var getLeastSold = DBData.MonthlySales
+            var sales = await _productOrderService.GetAllSaleAsync();
+            var getLeastSold = sales
                                 .Where(x => x.SaleDate.Year == YEAR)
                                 .GroupBy(x => x.ProductName)
                                 .Select(g => new Sale { ProductName = g.Key, QuantitySold = g.Sum(x => x.QuantitySold) }).LastOrDefault();
-            return Task.FromResult(getLeastSold);
+            return getLeastSold;
         }
 
-        public Task<Sale?> GetMostSoldProduct()
+        public async Task<Sale?> GetMostSoldProduct()
         {
             // find the most sold product in the year 2023
-            var getMostSold = DBData.MonthlySales
+            var sales = await _productOrderService.GetAllSaleAsync();
+            var getMostSold = sales
                                 .Where(x => x.SaleDate.Year == YEAR)
                                 .GroupBy(x => x.ProductName)
                                 .Select(g => new Sale { ProductName = g.Key, QuantitySold = g.Sum(x => x.QuantitySold) }).FirstOrDefault();
-            return Task.FromResult(getMostSold);
+            return getMostSold;
         }
 
-        public Task<string> CalculateTotalQtySold()
+        public async Task<string> CalculateTotalQtySold()
         {
             // calculate the total quantity sold in in the year 2023
-            var CalculateTotalQtySold = DBData.MonthlySales
+            var sales = await _productOrderService.GetAllSaleAsync();
+            var CalculateTotalQtySold = sales
                               .Where(x => x.SaleDate.Year == YEAR).Sum(x => x.QuantitySold).ToString();
-            return Task.FromResult(CalculateTotalQtySold);
+            return CalculateTotalQtySold;
 
         }
 
-        public Task<List<Sale>> GetMostSoldProductEveryMonth()
+        public async Task<List<Sale>> GetMostSoldProductEveryMonth()
         {
             // get most sold product in every month of year 2023
-            var getMostSoldEveryMonth = DBData.MonthlySales
+            var sales = await _productOrderService.GetAllSaleAsync();
+            var getMostSoldEveryMonth = sales
                               .Where(x => x.SaleDate.Year == YEAR)
                               .GroupBy(x => x.SaleDate.Month)
                               .Select(g => new Sale
@@ -101,13 +107,14 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
                                   QuantitySold = g.Max(x => x.QuantitySold),
                                   ProductName = g.OrderByDescending(x => x.QuantitySold).FirstOrDefault()?.ProductName
                               }).ToList();
-            return Task.FromResult(getMostSoldEveryMonth);
+            return getMostSoldEveryMonth;
         }
 
-        public Task<List<Sale>> GetLeastSoldProductEveryMonth()
+        public async Task<List<Sale>> GetLeastSoldProductEveryMonth()
         {
             // get least sold product in every month of year 2023
-            var getLeastSoldEveryMonth = DBData.MonthlySales
+            var sales = await _productOrderService.GetAllSaleAsync();
+            var getLeastSoldEveryMonth = sales
                              .Where(x => x.SaleDate.Year == YEAR)
                              .GroupBy(x => x.SaleDate.Month)
                              .Select(g => new Sale
@@ -116,26 +123,28 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
                                  QuantitySold = g.Min(x => x.QuantitySold),
                                  ProductName = g.OrderByDescending(x => x.QuantitySold).LastOrDefault()?.ProductName
                              }).ToList();
-            return Task.FromResult(getLeastSoldEveryMonth);
+            return getLeastSoldEveryMonth;
         }
 
-        public Task<List<Sale>> GetAvgQtySoldProductEachMonth()
+        public async Task<List<Sale>> GetAvgQtySoldProductEachMonth()
         {
             // find the average quantity sold of products in each month of year 2023
-            var getAvgQty = DBData.MonthlySales
+            var sales = await _productOrderService.GetAllSaleAsync();
+            var getAvgQty = sales
                                 .GroupBy(x => x.SaleDate.Month)
                                 .Select(g => new Sale 
                                 {
                                     Month = g.Key, 
                                     QuantitySold = g.Average(x => x.QuantitySold) 
                                 }).ToList();
-            return Task.FromResult(getAvgQty);
+            return getAvgQty;
         }
 
-        public Task<List<object>> GetAggregateStatEachProduct()
+        public async Task<List<object>> GetAggregateStatEachProduct()
         {
             // find aggregate statistics for each product category in year 2023
-            var getAggregateStat = DBData.MonthlySales
+            var sales = await _productOrderService.GetAllSaleAsync();
+            var getAggregateStat = sales
                                .Where(x => x.SaleDate.Year == YEAR)
                                .GroupBy(x => x.ProductName)
                                .Select(g => new 
@@ -158,7 +167,7 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
                 obj.Add($"  Maximum Sale: {stat.MinQuantitySold}");
                 
             }
-            return Task.FromResult(obj);
+            return obj;
         }
     }
 }

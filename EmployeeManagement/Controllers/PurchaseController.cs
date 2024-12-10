@@ -20,101 +20,101 @@ namespace EmployeeManagement.Web.Controllers
         public async Task<ActionResult<IEnumerable<Purchase>>> GetPurchaseCustomerList()
         {
 
-            var getList = await _purchaseService.GetPurchaseCustomerList();
-            return Ok(getList);
+            var getPurchaseCustomerListList = await _purchaseService.GetPurchaseCustomerList();
+            return Ok(getPurchaseCustomerListList);
         }
 
         [HttpGet("GetTotalAmountSpentByEachCustomer")]
         public async Task<ActionResult<IEnumerable<Purchase>>> GetTotalAmountSpentByEachCustomer()
         {
 
-            var getList = await _purchaseService.GetTotalAmountSpentByEachCustomer();
-            return Ok(getList);
+            var getTotalAmountSpentByEachCustomerList = await _purchaseService.GetTotalAmountSpentByEachCustomer();
+            return Ok(getTotalAmountSpentByEachCustomerList);
         }
 
         [HttpGet("GetTopCustomerAmtSpentEachMonth")]
         public async Task<ActionResult<IEnumerable<Purchase>>> GetTopCustomerAmtSpentEachMonth()
         {
 
-            var getList = await _purchaseService.GetTopCustomerAmtSpentEachMonth();
-            return Ok(getList);
+            var getTopCustomerAmtSpentEachMonthList = await _purchaseService.GetTopCustomerAmtSpentEachMonth();
+            return Ok(getTopCustomerAmtSpentEachMonthList);
         }
 
         [HttpGet("GetMinMaxAvgAllCustomer")]
         public async Task<ActionResult<IEnumerable<object>>> GetMinMaxAvgAllCustomer()
         {
 
-            var getList = await _purchaseService.GetMinMaxAvgAllCustomer();
-            return Ok(getList);
+            var getMinMaxAvgAllCustomerList = await _purchaseService.GetMinMaxAvgAllCustomer();
+            return Ok(getMinMaxAvgAllCustomerList);
         }
         [HttpGet("GetAvgAmtSpentEachMonth")]
         public async Task<ActionResult<IEnumerable<Purchase>>> GetAvgAmtSpentEachMonth()
         {
 
-            var getList = await _purchaseService.GetAvgAmtSpentEachMonth();
-            return Ok(getList);
+            var getAvgAmtSpentEachMonthList = await _purchaseService.GetAvgAmtSpentEachMonth();
+            return Ok(getAvgAmtSpentEachMonthList);
         }
         [HttpGet("GetGroupOfCustPurchase6Month")]
         public async Task<ActionResult<IEnumerable<Purchase>>> GetGroupOfCustPurchase6Month()
         {
 
-            var getList = await _purchaseService.GetGroupOfCustPurchase6Month();
-            return Ok(getList);
+            var getGroupOfCustPurchase6MonthList = await _purchaseService.GetGroupOfCustPurchase6Month();
+            return Ok(getGroupOfCustPurchase6MonthList);
         }
         [HttpGet("GetMedianAmtSpent")]
         public async Task<ActionResult<double>> GetMedianAmtSpent()
         {
 
-            var getList = await _purchaseService.GetMedianAmtSpent();
-            return Ok(getList);
+            var getMedianAmtSpentList = await _purchaseService.GetMedianAmtSpent();
+            return Ok(getMedianAmtSpentList);
         }
         [HttpGet("GetHighestPurchaseDayWeek")]
         public async Task<ActionResult<IEnumerable<Purchase>>> GetHighestPurchaseDayWeek()
         {
-            var getList = await _purchaseService.GetHighestPurchaseDayWeek();
-            return Ok(getList);
+            var getHighestPurchaseDayWeekList = await _purchaseService.GetHighestPurchaseDayWeek();
+            return Ok(getHighestPurchaseDayWeekList);
         }
         [HttpGet("GetLowestPurchaseDayWeek")]
         public async Task<ActionResult<IEnumerable<Purchase>>> GetLowestPurchaseDayWeek()
         {
-            var getList = await _purchaseService.GetLowestPurchaseDayWeek();
-            return Ok(getList);
+            var getLowestPurchaseDayWeekList = await _purchaseService.GetLowestPurchaseDayWeek();
+            return Ok(getLowestPurchaseDayWeekList);
         }
         [HttpGet("GetTotalPurchaseWeekends")]
         public async Task<ActionResult<IEnumerable<Purchase>>> GetTotalPurchaseWeekends()
         {
-            var getList = await _purchaseService.GetTotalPurchaseWeekends();
-            return Ok(getList);
+            var getTotalPurchaseWeekendsList = await _purchaseService.GetTotalPurchaseWeekends();
+            return Ok(getTotalPurchaseWeekendsList);
         }
         [HttpGet("GetTotalPurchaseWeekdays")]
         public async Task<ActionResult<IEnumerable<Purchase>>> GetTotalPurchaseWeekdays()
         {
-            var getList = await _purchaseService.GetTotalPurchaseWeekdays();
-            return Ok(getList);
+            var getTotalPurchaseWeekdaysList = await _purchaseService.GetTotalPurchaseWeekdays();
+            return Ok(getTotalPurchaseWeekdaysList);
         }
         [HttpGet("GetTotalPurchaseEachDayWeek")]
         public async Task<ActionResult<IEnumerable<Purchase>>> GetTotalPurchaseEachDayWeek()
         {
-            var getList = await _purchaseService.GetTotalPurchaseEachDayWeek();
-            return Ok(getList);
+            var getTotalPurchaseEachDayWeekList = await _purchaseService.GetTotalPurchaseEachDayWeek();
+            return Ok(getTotalPurchaseEachDayWeekList);
         }
         [HttpGet("GetTotalPurchaseEachDayWeek3Months")]
         public async Task<ActionResult<IEnumerable<Purchase>>> GetTotalPurchaseEachDayWeek3Months()
         {
-            var getList = await _purchaseService.GetTotalPurchaseEachDayWeek3Months();
-            return Ok(getList);
+            var getTotalPurchaseEachDayWeek3MonthsList = await _purchaseService.GetTotalPurchaseEachDayWeek3Months();
+            return Ok(getTotalPurchaseEachDayWeek3MonthsList);
         }
         [HttpGet("GetAvgPurchaseEachDayWeek")]
         public async Task<ActionResult<IEnumerable<Purchase>>> GetAvgPurchaseEachDayWeek()
         {
-            var getList = await _purchaseService.GetAvgPurchaseEachDayWeek();
-            return Ok(getList);
+            var getAvgPurchaseEachDayWeekList = await _purchaseService.GetAvgPurchaseEachDayWeek();
+            return Ok(getAvgPurchaseEachDayWeekList);
         }
         [HttpGet("GetPurchaseInformationforCustId3Months/{custId}")]
         public async Task<ActionResult<IEnumerable<Purchase>>> GetPurchaseInformationforCustId3Months(string custId)
         {
-            var getList = await _purchaseService.GetPurchaseInformationforCustId3Months(custId);
-            return Ok(getList);
+            var getPurchaseInformationforCustId3MonthsList = await _purchaseService.GetPurchaseInformationforCustId3Months(custId);
+            return Ok(getPurchaseInformationforCustId3MonthsList);
         }
     }
 }

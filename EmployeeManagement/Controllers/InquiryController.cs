@@ -19,20 +19,20 @@ namespace EmployeeManagement.Web.Controllers
         [HttpGet("GetNoOfInquiryPerCategory3Month")]
         public async Task<ActionResult<IEnumerable<Inquiry>>> GetNoOfInquiryPerCategory3Month()
         {
-            var getList = await _inquiryService.GetNoOfInquiryPerCategory3Month();
-            return Ok(getList);
+            var getNoOfInquiryPerCategory3MonthList = await _inquiryService.GetNoOfInquiryPerCategory3Month();
+            return Ok(getNoOfInquiryPerCategory3MonthList);
         }
         [HttpGet("GetDateHadHighestNoInquiry")]
         public async Task<ActionResult<IEnumerable<Inquiry>>> GetDateHadHighestNoInquiry()
         {
-            var getList = await _inquiryService.GetDateHadHighestNoInquiry();
-            return Ok(getList);
+            var getDateHadHighestNoInquiryList = await _inquiryService.GetDateHadHighestNoInquiry();
+            return Ok(getDateHadHighestNoInquiryList);
         }
         [HttpGet("GetProductCategoryHighestNoInquiry3Month")]
         public async Task<ActionResult<IEnumerable<Inquiry>>> GetProductCategoryHighestNoInquiry3Month()
         {
-            var getList = await _inquiryService.GetProductCategoryHighestNoInquiry3Month();
-            return Ok(getList);
+            var getProductCategoryHighestNoInquiry3MonthList = await _inquiryService.GetProductCategoryHighestNoInquiry3Month();
+            return Ok(getProductCategoryHighestNoInquiry3MonthList);
         }
     }
 }
