@@ -131,7 +131,7 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
         {
             // get the day of the week with the highest number of purchases in year 2023
             var purchases = await _productOrderService.GetAllPurchaseAsync();
-            var getHighestpurchaseDayWeek = purchases
+            var getHighestpurchaseDayWeek = purchases.Where(x => x.PurchaseDate.Year == YEAR)
                                     .GroupBy(x => x.PurchaseDate.DayOfWeek)
                                     .Select(g => new Purchase
                                     {
@@ -145,7 +145,7 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
         {
             // get the day of the week with the lowest number of purchases in year 2023
             var purchases = await _productOrderService.GetAllPurchaseAsync();
-            var getLowestpurchaseDayWeek = purchases
+            var getLowestpurchaseDayWeek = purchases.Where(x => x.PurchaseDate.Year == YEAR)
                                     .GroupBy(x => x.PurchaseDate.DayOfWeek)
                                     .Select(g => new Purchase
                                     {
@@ -159,7 +159,7 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
         {
             // get the total number of purchases made on weekends in year 2023
             var purchases = await _productOrderService.GetAllPurchaseAsync();
-            var getTotalWeekend = purchases.Where(x => x.PurchaseDate.DayOfWeek == (DayOfWeek)0 || x.PurchaseDate.DayOfWeek == (DayOfWeek)6)
+            var getTotalWeekend = purchases.Where(x => x.PurchaseDate.Year == YEAR).Where(x=> x.PurchaseDate.DayOfWeek == (DayOfWeek)0 || x.PurchaseDate.DayOfWeek == (DayOfWeek)6)
                                     .GroupBy(x => x.PurchaseDate.DayOfWeek)
                                     .Select(g => new Purchase
                                     {
@@ -174,7 +174,7 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
         {
             // get the total number of purchases made on weekdays in year 2023
             var purchases = await _productOrderService.GetAllPurchaseAsync();
-            var getTotalWeekDays = purchases.Where(x => x.PurchaseDate.DayOfWeek > (DayOfWeek)0 && x.PurchaseDate.DayOfWeek < (DayOfWeek)6)
+            var getTotalWeekDays = purchases.Where(x => x.PurchaseDate.Year == YEAR).Where(x => x.PurchaseDate.DayOfWeek > (DayOfWeek)0 && x.PurchaseDate.DayOfWeek < (DayOfWeek)6)
                                     .GroupBy(x => x.PurchaseDate.DayOfWeek)
                                     .Select(g => new Purchase
                                     {
@@ -189,7 +189,7 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
         {
             // get the total number of purchases made on each day of the week in year 2023
             var purchases = await _productOrderService.GetAllPurchaseAsync();
-            var getEachDay = purchases
+            var getEachDay = purchases.Where(x => x.PurchaseDate.Year == YEAR)
                                         .GroupBy(x => x.PurchaseDate.DayOfWeek)
                                         .Select(g => new Purchase
                                         {
@@ -218,7 +218,7 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
         {
             // get average number of purchases made on each day of the week in year 2023
             var purchases = await _productOrderService.GetAllPurchaseAsync();
-            var getAvgEachDay = purchases
+            var getAvgEachDay = purchases.Where(x => x.PurchaseDate.Year == YEAR)
                                         .GroupBy(x => x.PurchaseDate.DayOfWeek)
                                         .Select(g => new Purchase
                                         {
