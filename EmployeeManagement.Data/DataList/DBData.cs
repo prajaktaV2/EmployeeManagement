@@ -162,7 +162,14 @@ namespace EmployeeManagement.Data.DataList
                 new Product("P013", "Socks", 25.00, "Apparel"),
                 new Product("P020", "Yoga Mat", 50.00, "Fitness"),
                 new Product("P021", "Kettlebell", 45.00, "Fitness")
-            ], new DateTime(2024, 02, 14, 18, 45, 00)) // Evening, 2024
+            ], new DateTime(2024, 02, 14, 18, 45, 00)), // Evening, 2024
+                 new Order("O011", "C002",
+            [
+                new Product("P003", "Blouse", 80.00, "Apparel"),
+                new Product("P004", "Jeans", 60.00, "Apparel"),
+                new Product("P002", "Smartphone", 700.00, "Electronics")
+            ], new DateTime(2023, 01, 01, 10, 15, 00)), // Morning, 2023
+    
             ];
 
             public static readonly List<Inquiry> MonthlyInquiries =
@@ -290,7 +297,8 @@ namespace EmployeeManagement.Data.DataList
             new CustomerActivity("C003", new DateTime(2023, 07, 20)),
             new CustomerActivity("C003", new DateTime(2023, 11, 15)),
             new CustomerActivity("C004", new DateTime(2023, 04, 15)),
-            new CustomerActivity("C004", new DateTime(2023, 08, 05))
+            new CustomerActivity("C004", new DateTime(2023, 08, 05)),
+            new CustomerActivity("C004", new DateTime(2024, 10, 05))
         };
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using EmployeeManagement.Data.DataList;
 using EmployeeManagement.Model.Models;
 using EmployeeManagement.Service.BusinessLogic.Interface;
@@ -11,55 +7,61 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
 {
     public class OrderService : IOrderService
     {
-
-        public static DateTime maxOrderDate = DBData.Orders.Where(x => x.OrderDate.Year == YEAR).Max(p => p.OrderDate);
-        public static DateTime minOrderDate = DBData.Orders.Where(x => x.OrderDate.Year == YEAR).Min(p => p.OrderDate);
-
-        public static DateTime threeMonthsAgo = DBData.Orders.Where(x=> x.OrderDate.Year == YEAR).Max(x => x.OrderDate).AddMonths(-3);
-        public static DateTime threeMonthsLater = DBData.Orders.Where(x => x.OrderDate.Year == YEAR).Min(x => x.OrderDate).AddMonths(3);
+        private readonly IProductOrderService _productOrderService;
+        public OrderService(IProductOrderService productOrderService)
+        {
+            _productOrderService = productOrderService;
+        }
+        
         public const int YEAR = 2023;
 
-        public Task<List<string>> GetCustIdMadePurchaseInAfternoon()
+        public async Task<List<string>> GetCustIdMadePurchaseInAfternoon()
         {
             // get customer ids who have made purchases in the afternoon of first month of year 2023
-            var getAfternoonCustId = DBData.Orders
-                            .Where(x => x.OrderDate.Year == YEAR && x.OrderDate.Hour >= 12 && x.OrderDate.Hour <= 18)
+            var orders = await _productOrderService.GetAllOrderAsync();
+            var getAfternoonCustId = orders
+                            .Where(x => x.OrderDate >= new DateTime(YEAR,01,01,12,00,00) && x.OrderDate<= new DateTime(YEAR,01,31,16,00,00))
                             .Select(x => x.CustomerId).ToList();
                             
-            return Task.FromResult(getAfternoonCustId);
+            return getAfternoonCustId;
         }
 
-        public Task<List<string>> GetCustIdMadePurchaseInEvening()
+        public async Task<List<string>> GetCustIdMadePurchaseInEvening()
         {
             // get customer ids who have made purchases in the evening of first month of year 2023
-            var getEveningCustId = DBData.Orders
-                            .Where(x => x.OrderDate.Year == YEAR && x.OrderDate.Hour >= 18 && x.OrderDate.Hour < 21)
+            var orders = await _productOrderService.GetAllOrderAsync();
+            var getEveningCustId = orders
+                            .Where(x => x.OrderDate >= new DateTime(YEAR, 01, 01, 16, 00, 00) && x.OrderDate <= new DateTime(YEAR, 01, 31, 21, 00, 00))
                             .Select(x => x.CustomerId).ToList();
-            return Task.FromResult(getEveningCustId);
+            return getEveningCustId;
         }
 
-        public Task<List<string>> GetCustIdMadePurchaseInMorning()
+        public async Task<List<string>> GetCustIdMadePurchaseInMorning()
         {
             // get customer ids who have made purchases in the morning of first month of year 2023
-            var getMorningCustId = DBData.Orders
-                            .Where(x => x.OrderDate.Year == YEAR && x.OrderDate.Hour >= 6 && x.OrderDate.Hour < 12)
+            var orders = await _productOrderService.GetAllOrderAsync();
+            var getMorningCustId = orders
+                            .Where(x => x.OrderDate >= new DateTime(YEAR, 01, 01, 06, 00, 00) && x.OrderDate <= new DateTime(YEAR, 01, 31, 12, 00, 00))
                             .Select(x => x.CustomerId).ToList();
-            return Task.FromResult(getMorningCustId);
+            return getMorningCustId;
         }
 
-        public Task<List<Order>> GetOrderInfo(string custId)
+        public async Task<List<Order>> GetOrderInfo(string custId)
         {
             // find the order information for customer id who have made purchases in the last 3 months
-            var getOrderInfo = DBData.Orders.Where(x => x.OrderDate >= threeMonthsAgo && x.OrderDate <= maxOrderDate)
+            var orders = await _productOrderService.GetAllOrderAsync();
+            var getOrderInfo = orders.Where(x => x.OrderDate >= DateTime.Now.AddMonths(-3))
                             .Where(x => x.CustomerId == custId).ToList();
-            return Task.FromResult(getOrderInfo);
+            return getOrderInfo;
         }
 
-        public Task<List<OrderPurchaseViewModel>> GetOrderPurchaseInfo(string custId)
+        public async Task<List<OrderPurchaseViewModel>> GetOrderPurchaseInfo(string custId)
         {
             // find the purchase information and order information for customer id
-            var getPurchaseOrderInfo = DBData.Purchases
-                                       .Join(DBData.Orders, p => p.CustomerId, o => o.CustomerId, (p, o) => new OrderPurchaseViewModel
+            var orders = await _productOrderService.GetAllOrderAsync();
+            var purchases = await _productOrderService.GetAllPurchaseAsync();
+            var getPurchaseOrderInfo = purchases
+                                       .Join(orders, p => p.CustomerId, o => o.CustomerId, (p, o) => new OrderPurchaseViewModel
                                        {
                                            OrderId=o.OrderId,
                                            CustomerId = p.CustomerId,
@@ -68,58 +70,64 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
                                            PurchaseDate = p.PurchaseDate,
                                            OrderDate = o.OrderDate
                                        }).Where(x => x.CustomerId == custId).ToList();
-            return Task.FromResult(getPurchaseOrderInfo);
+            return getPurchaseOrderInfo;
         }
 
-        public Task<int> GetTotalNoMadePurchaseInAfterNoon()
+        public async Task<int> GetTotalNoMadePurchaseInAfterNoon()
         {
             // get the total number of purchases made in the afternoon of first month of year 2023
-            var getTotalPurchaseAfterNoon = DBData.Orders
-                            .Where(x => x.OrderDate.Year == YEAR && x.OrderDate.Hour >= 12 && x.OrderDate.Hour <= 18)
+            var orders = await _productOrderService.GetAllOrderAsync();
+            var getTotalPurchaseAfterNoon = orders
+                            .Where(x => x.OrderDate >= new DateTime(YEAR, 01, 01, 12, 00, 00) && x.OrderDate <= new DateTime(YEAR, 01, 31, 16, 00, 00))
                             .Select(x => x.CustomerId).Count();
-            return Task.FromResult(getTotalPurchaseAfterNoon);
+            return getTotalPurchaseAfterNoon;
         }
 
-        public Task<int> GetTotalNoMadePurchaseInEvening()
+        public async Task<int> GetTotalNoMadePurchaseInEvening()
         {
-            // get the total number of purchases made in the evening of first month 
-            var getTotalPurchaseEvening = DBData.Orders
-                            .Where(x => x.OrderDate.Hour >= 18 && x.OrderDate.Hour < 21)
+            // get the total number of purchases made in the evening of first month of year 2023
+            var orders = await _productOrderService.GetAllOrderAsync();
+            var getTotalPurchaseEvening = orders
+                           .Where(x => x.OrderDate >= new DateTime(YEAR, 01, 01, 16, 00, 00) && x.OrderDate <= new DateTime(YEAR, 01, 31, 21, 00, 00))
                             .Select(x => x.CustomerId).Count();
-            return Task.FromResult(getTotalPurchaseEvening);
+            return getTotalPurchaseEvening;
         }
 
-        public Task<int> GetTotalNoMadePurchaseInMorning()
+        public async Task<int> GetTotalNoMadePurchaseInMorning()
         {
             // get the total number of purchases made in the morning of first month of year 2023
-            var getTotalPurchaseMorning = DBData.Orders
-                            .Where(x => x.OrderDate.Year==YEAR && x.OrderDate.Hour >= 6 && x.OrderDate.Hour < 12)
+            var orders = await _productOrderService.GetAllOrderAsync();
+            var getTotalPurchaseMorning = orders
+                            .Where(x => x.OrderDate >= new DateTime(YEAR, 01, 01, 06, 00, 00) && x.OrderDate <= new DateTime(YEAR, 01, 31, 12, 00, 00))
                             .Select(x => x.CustomerId).Count();
-            return Task.FromResult(getTotalPurchaseMorning);
+            return getTotalPurchaseMorning;
         }
 
-        public Task<int> GetTotalOrderIn3Month()
+        public async Task<int> GetTotalOrderIn3Month()
         {
             // get the total number of orders placed in the last 3 months
-            var getTotalOrderPlaced = DBData.Orders.Where(x => x.OrderDate >= threeMonthsAgo && x.OrderDate <= maxOrderDate)
+            var orders = await _productOrderService.GetAllOrderAsync();
+            var getTotalOrderPlaced = orders.Where(x => x.OrderDate >= DateTime.Now.AddMonths(-3))
                                      .Count();
-            return Task.FromResult(getTotalOrderPlaced);
+            return getTotalOrderPlaced;
         }
 
-        public Task<List<Order>> GetTotalUniqueCustomerOrderIn3Month()
+        public async Task<List<Order>> GetTotalUniqueCustomerOrderIn3Month()
         {
             // get the total number of unique customers who have placed orders in the last 3 months
-            var getUniqueCust = DBData.Orders.Where(x => x.OrderDate >= threeMonthsAgo && x.OrderDate <= maxOrderDate).Distinct().ToList();
-            return Task.FromResult(getUniqueCust);
+            var orders = await _productOrderService.GetAllOrderAsync();
+            var getUniqueCust = orders.Where(x => x.OrderDate >= DateTime.Now.AddMonths(-3)).DistinctBy(x=>x.CustomerId).ToList();
+            return getUniqueCust;
         }
 
-        public Task<List<int>> GetTotalNoOrderPlacedPerMonth3Month()
+        public async Task<List<OrderResponse>> GetTotalNoOrderPlacedPerMonth3Month()
         {
             // get the total number of orders placed per month in the last 3 months
-            var getTotalOrderPlaced3Month = DBData.Orders.Where(x => x.OrderDate >= threeMonthsAgo && x.OrderDate <= maxOrderDate)
+            var orders = await _productOrderService.GetAllOrderAsync();
+            var getTotalOrderPlaced3Month = orders.Where(x => x.OrderDate >= DateTime.Now.AddMonths(-3))
                                             .GroupBy(x => x.OrderDate.Month)
-                                            .Select(grp => grp.Count()).ToList();
-            return Task.FromResult(getTotalOrderPlaced3Month);
+                                            .Select(grp => new OrderResponse { Month = grp.Key, TotalCount = grp.Count() }).ToList();
+            return getTotalOrderPlaced3Month;
         }
     }
 }

@@ -10,6 +10,6 @@ namespace EmployeeManagement.Service.BusinessLogic.Interface
     public interface ICustomerActivityService
     {
         public Task<List<CustomerActivity>> GetUniqueCustomer3Months();
-        public Task<List<CustomerActivity>> GetMostActiveCustomer3Months();
+        public Task<List<string>> GetMostActiveCustomer3Months();
     }
 }

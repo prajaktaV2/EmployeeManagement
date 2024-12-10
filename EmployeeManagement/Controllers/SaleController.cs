@@ -21,77 +21,77 @@ namespace EmployeeManagement.Web.Controllers
         public async Task<ActionResult<IEnumerable<Sale>>> GetTop3ProductSale()
         {
 
-            var getList = await _saleService.GetTop3ProductSale();
-            return Ok(getList);
+            var getTop3ProductSaleList = await _saleService.GetTop3ProductSale();
+            return Ok(getTop3ProductSaleList);
         }
 
         [HttpGet("GetTotalSalePerMonthSale")]
         public async Task<ActionResult<IEnumerable<Sale>>> GetTotalSalePerMonthSale()
         {
 
-            var getList = await _saleService.GetTotalSalePerMonthSale();
-            return Ok(getList);
+            var getTotalSalePerMonthSaleList = await _saleService.GetTotalSalePerMonthSale();
+            return Ok(getTotalSalePerMonthSaleList);
         }
 
         [HttpGet("GetMostPopularProduct")]
         public async Task<ActionResult<Sale>> GetMostPopularProduct()
         {
 
-            var getList = await _saleService.GetMostPopularProduct();
-            return Ok(getList);
+            var getMostPopularProductList = await _saleService.GetMostPopularProduct();
+            return Ok(getMostPopularProductList);
         }
 
         [HttpGet("GetLeastPopularProduct")]
         public async Task<ActionResult<Sale>> GetLeastPopularProduct()
         {
 
-            var getList = await _saleService.GetLeastPopularProduct();
-            return Ok(getList);
+            var getLeastPopularProductList = await _saleService.GetLeastPopularProduct();
+            return Ok(getLeastPopularProductList);
         }
         [HttpGet("GetLeastSoldProduct")]
         public async Task<ActionResult<Sale>> GetLeastSoldProduct()
         {
 
-            var getList = await _saleService.GetLeastSoldProduct();
-            return Ok(getList);
+            var getLeastSoldProductList = await _saleService.GetLeastSoldProduct();
+            return Ok(getLeastSoldProductList);
         }
         [HttpGet("GetMostSoldProduct")]
         public async Task<ActionResult<Sale>> GetMostSoldProduct()
         {
 
-            var getList = await _saleService.GetMostSoldProduct();
-            return Ok(getList);
+            var getMostSoldProductList = await _saleService.GetMostSoldProduct();
+            return Ok(getMostSoldProductList);
         }
         [HttpGet("CalculateTotalQtySold")]
         public async Task<ActionResult<string>> CalculateTotalQtySold()
         {
-            var getList = await _saleService.CalculateTotalQtySold();
-            return Ok(getList);
+            var getCalculateTotalQtySoldList = await _saleService.CalculateTotalQtySold();
+            return Ok(getCalculateTotalQtySoldList);
         }
         [HttpGet("GetMostSoldProductEveryMonth")]
         public async Task<ActionResult<IEnumerable<Sale>>> GetMostSoldProductEveryMonth()
         {
-            var getList = await _saleService.GetMostSoldProductEveryMonth();
-            return Ok(getList);
+            var getMostSoldProductEveryMonthList = await _saleService.GetMostSoldProductEveryMonth();
+            return Ok(getMostSoldProductEveryMonthList);
         }
         [HttpGet("GetLeastSoldProductEveryMonth")]
         public async Task<ActionResult<IEnumerable<Sale>>> GetLeastSoldProductEveryMonth()
         {
-            var getList = await _saleService.GetLeastSoldProductEveryMonth();
-            return Ok(getList);
+            var getLeastSoldProductEveryMonthList = await _saleService.GetLeastSoldProductEveryMonth();
+            return Ok(getLeastSoldProductEveryMonthList);
         }
 
         [HttpGet("GetAvgQtySoldProductEachMonth")]
         public async Task<ActionResult<IEnumerable<Sale>>> GetAvgQtySoldProductEachMonth()
         {
-            var getList = await _saleService.GetAvgQtySoldProductEachMonth();
-            return Ok(getList);
+            var getAvgQtySoldProductEachMonthList = await _saleService.GetAvgQtySoldProductEachMonth();
+            return Ok(getAvgQtySoldProductEachMonthList);
         }
         [HttpGet("GetAggregateStatEachProduct")]
         public async Task<ActionResult<IEnumerable<object>>> GetAggregateStatEachProduct()
         {
-            var getList = await _saleService.GetAggregateStatEachProduct();
-            return Ok(getList);
+            var getAggregateStatEachProductList = await _saleService.GetAggregateStatEachProduct();
+            return Ok(getAggregateStatEachProductList);
         }
     }
 }

@@ -33,29 +33,29 @@ namespace EmployeeManagement.Web.Controllers
         [HttpGet("GetAllCustomerActivity")]
         public async Task<ActionResult<IEnumerable<Sale>>> GetAllCustomerActivity()
         {
-            var sales = await _productOrderService.GetAllCustomerActivityAsync();
-            return Ok(sales);
+            var customerActivities = await _productOrderService.GetAllCustomerActivityAsync();
+            return Ok(customerActivities);
         }
 
         [HttpGet("GetAllInquiry")]
         public async Task<ActionResult<IEnumerable<Sale>>> GetAllInquiry()
         {
-            var sales = await _productOrderService.GetAllInquiryAsync();
-            return Ok(sales);
+            var inquiries = await _productOrderService.GetAllInquiryAsync();
+            return Ok(inquiries);
         }
 
         [HttpGet("GetAllPurchase")]
         public async Task<ActionResult<IEnumerable<Sale>>> GetAllPurchase()
         {
-            var sales = await _productOrderService.GetAllPurchaseAsync();
-            return Ok(sales);
+            var purchase = await _productOrderService.GetAllPurchaseAsync();
+            return Ok(purchase);
         }
 
         [HttpGet("GetAllSupportTicket")]
         public async Task<ActionResult<IEnumerable<Sale>>> GetAllSupportTicket()
         {
-            var sales = await _productOrderService.GetAllSupportTicketAsync();
-            return Ok(sales);
+            var supportTickets = await _productOrderService.GetAllSupportTicketAsync();
+            return Ok(supportTickets);
         }
     }
 }

@@ -19,6 +19,6 @@ namespace EmployeeManagement.Service.BusinessLogic.Interface
         public Task<List<Order>> GetOrderInfo(string custId);
         public Task<int> GetTotalOrderIn3Month();
         public Task<List<Order>> GetTotalUniqueCustomerOrderIn3Month();
-        public Task<List<int>> GetTotalNoOrderPlacedPerMonth3Month();
+        public Task<List<OrderResponse>> GetTotalNoOrderPlacedPerMonth3Month();
     }
 }

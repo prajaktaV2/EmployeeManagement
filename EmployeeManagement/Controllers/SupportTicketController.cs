@@ -18,38 +18,38 @@ namespace EmployeeManagement.Web.Controllers
         [HttpGet("GetAvgSupportTicket3Months")]
         public async Task<ActionResult<IEnumerable<SupportTicket>>> GetAvgSupportTicket3Months()
         {
-            var getList = await _supportTicketService.GetAvgSupportTicket3Months();
-            return Ok(getList);
+            var getAvgSupportTicket3MonthsList = await _supportTicketService.GetAvgSupportTicket3Months();
+            return Ok(getAvgSupportTicket3MonthsList);
         }
         [HttpGet("GetDuplicateSupportTicket")]
         public async Task<ActionResult<IEnumerable<SupportTicket>>> GetDuplicateSupportTicket()
         {
-            var getList = await _supportTicketService.GetDuplicateSupportTicket();
-            return Ok(getList);
+            var getDuplicateSupportTicketList = await _supportTicketService.GetDuplicateSupportTicket();
+            return Ok(getDuplicateSupportTicketList);
         }
         [HttpGet("GetSupportTicketCategory3Month")]
         public async Task<ActionResult<IEnumerable<SupportTicket>>> GetSupportTicketCategory3Month()
         {
-            var getList = await _supportTicketService.GetSupportTicketCategory3Month();
-            return Ok(getList);
+            var getSupportTicketCategory3MonthList = await _supportTicketService.GetSupportTicketCategory3Month();
+            return Ok(getSupportTicketCategory3MonthList);
         }
         [HttpGet("GetSupportTicket3Month")]
         public async Task<ActionResult<IEnumerable<SupportTicket>>> GetSupportTicket3Month()
         {
-            var getList = await _supportTicketService.GetSupportTicket3Month();
-            return Ok(getList);
+            var getSupportTicket3MonthList = await _supportTicketService.GetSupportTicket3Month();
+            return Ok(getSupportTicket3MonthList);
         }
         [HttpGet("GetAvgSupportTicketPerMonth")]
         public async Task<ActionResult<IEnumerable<SupportTicket>>> GetAvgSupportTicketPerMonth()
         {
-            var getList = await _supportTicketService.GetAvgSupportTicketPerMonth();
-            return Ok(getList);
+            var getAvgSupportTicketPerMonthList = await _supportTicketService.GetAvgSupportTicketPerMonth();
+            return Ok(getAvgSupportTicketPerMonthList);
         }
         [HttpGet("GetHighestSupportTicket")]
         public async Task<ActionResult<SupportTicket>> GetHighestSupportTicket()
         {
-            var getList = await _supportTicketService.GetHighestSupportTicket();
-            return Ok(getList);
+            var getHighestSupportTicketList = await _supportTicketService.GetHighestSupportTicket();
+            return Ok(getHighestSupportTicketList);
         }
     }
 }
