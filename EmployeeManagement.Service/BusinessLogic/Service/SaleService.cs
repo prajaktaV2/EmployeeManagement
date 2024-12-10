@@ -130,7 +130,7 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
         {
             // find the average quantity sold of products in each month of year 2023
             var sales = await _productOrderService.GetAllSaleAsync();
-            var getAvgQty = sales
+            var getAvgQty = sales.Where(x => x.SaleDate.Year == YEAR)
                                 .GroupBy(x => x.SaleDate.Month)
                                 .Select(g => new Sale 
                                 {
