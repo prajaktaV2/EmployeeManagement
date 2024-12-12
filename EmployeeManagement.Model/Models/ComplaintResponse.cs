@@ -10,5 +10,6 @@ namespace EmployeeManagement.Model.Models
     {
         public string Category { get; set; } = string.Empty;
         public int TotalCount { get; set; }
+        public bool Critical { get; set; }
     }
 }

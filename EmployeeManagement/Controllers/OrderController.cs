@@ -77,7 +77,7 @@ namespace EmployeeManagement.Web.Controllers
             return Ok(getTotalUniqueCustomerOrderIn3MonthList);
         }
         [HttpGet("GetTotalNoOrderPlacedPerMonth3Month")]
-        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetTotalNoOrderPlacedPerMonth3Month()
+        public async Task<ActionResult<IEnumerable<int>>> GetTotalNoOrderPlacedPerMonth3Month()
         {
             var getTotalNoOrderPlacedPerMonth3MonthList = await _orderService.GetTotalNoOrderPlacedPerMonth3Month();
             return Ok(getTotalNoOrderPlacedPerMonth3MonthList);
