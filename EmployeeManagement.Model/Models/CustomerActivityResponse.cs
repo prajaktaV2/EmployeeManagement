@@ -9,7 +9,6 @@ namespace EmployeeManagement.Model.Models
     public class CustomerActivityResponse
     {
         public string CustomerId { get; set; } = string.Empty;
-        public int Purchasefrequency {  get; set; }
         public string LoyaltyTier { get; set; } = string.Empty;
     }
 }

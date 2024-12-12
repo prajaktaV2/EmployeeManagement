@@ -18,7 +18,7 @@ namespace EmployeeManagement.Web.Controllers
         }
 
         [HttpGet("GetProductSalesVolumeEachSeason/{num}")]
-        public async Task<ActionResult<IEnumerable<ComplaintResponse>>> GetProductSalesVolumeEachSeason(int num)
+        public async Task<ActionResult<IDictionary<string,List<SalesResponse>>>> GetProductSalesVolumeEachSeason(int num)
         {
             try
             {

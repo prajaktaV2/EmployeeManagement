@@ -120,13 +120,13 @@ namespace EmployeeManagement.Service.BusinessLogic.Service
             return getUniqueCust;
         }
 
-        public async Task<List<OrderResponse>> GetTotalNoOrderPlacedPerMonth3Month()
+        public async Task<List<int>> GetTotalNoOrderPlacedPerMonth3Month()
         {
             // get the total number of orders placed per month in the last 3 months
             var orders = await _productOrderService.GetAllOrderAsync();
             var getTotalOrderPlaced3Month = orders.Where(x => x.OrderDate >= DateTime.Now.AddMonths(-3))
                                             .GroupBy(x => x.OrderDate.Month)
-                                            .Select(grp => new OrderResponse { Month = grp.Key, TotalCount = grp.Count() }).ToList();
+                                            .Select(grp =>  grp.Count()).ToList();
             return getTotalOrderPlaced3Month;
         }
     }

@@ -8,8 +8,9 @@ namespace EmployeeManagement.Model.Models
 {
     public class OrderResponse
     {
-        public int Month { get; set; }
+        
+        public string ProductId { get; set; } = string.Empty;
         public string Product { get; set; }=string.Empty;
-        public int TotalCount { get; set; }
+        public Dictionary<string, int> monthlyOrders { get; set; } = new Dictionary<string, int>();
     }
 }

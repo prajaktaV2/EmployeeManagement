@@ -9,7 +9,7 @@ namespace EmployeeManagement.Service.BusinessLogic.Interface
 {
     public interface IApplicationDataService
     {
-        public Task<List<SalesResponse>> GetProductSalesVolumeEachSeason(int num);
+        public Task<Dictionary<string, List<SalesResponse>>> GetProductSalesVolumeEachSeason(int num);
         public Task<List<OrderResponse>> GetListOfProductWithOrderCountEachMonth(int year);
         public Task<List<ComplaintResponse>> GetListOfMajorComplaintRaised();
         public Task<List<CustomerActivityResponse>> GetListOfEachCustomerLoyaltyTier();
